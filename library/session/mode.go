@@ -8,4 +8,4 @@ func (GameMode) CreativeInventory() bool  { return false }
 func (GameMode) HasCollision() bool       { return true }
 func (GameMode) AllowsFlying() bool       { return false }
 func (GameMode) AllowsInteraction() bool  { return true }
-func (GameMode) Visible() bool            { return true }
+func (GameMode) Visible() bool            { return false }
