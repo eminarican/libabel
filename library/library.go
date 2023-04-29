@@ -7,6 +7,7 @@ import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/eminarican/libabel/library/command"
+	_ "github.com/eminarican/libabel/library/menu"
 	"github.com/eminarican/libabel/library/session"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 )
@@ -25,9 +26,14 @@ func (l *Library) Accept(p *player.Player) {
 	p.Message(text.Colourf("<yellow>Welcome to Library of Babel!</yellow>"))
 	p.SetGameMode(session.GameMode{})
 
-	p.Handle(&session.Handler{
+	session.AddGadget(p)
+
+	p.Handle(&session.Session{
+		Server: l.s,
 		Player: p,
-		Hex:    "libraryofbabel",
+		State: &session.State{
+			Hex: "libraryofbabel",
+		},
 	})
 	p.Inventory().Handle(&session.InvHandler{Player: p})
 }
@@ -37,9 +43,15 @@ func (l *Library) Start() {
 	l.s.Listen()
 
 	l.setupWorld()
-	l.registerCommands()
 
-	fmt.Println(text.ANSI(text.Colourf("<green>Library of Babel Started on Port 19132!</green>")))
+	cmd.Register(cmd.New(
+		"tp", "Teleports you to specified place or player",
+		nil, command.TeleportRoom{}, command.TeleportPlayer{},
+	))
+
+	fmt.Println(text.ANSI(text.Colourf(
+		"<green>Library of Babel Started on Port 19132!</green>",
+	)))
 
 	for l.s.Accept(l.Accept) {
 	}
@@ -55,10 +67,4 @@ func (l *Library) setupWorld() {
 
 	w.SetTime(18000)
 	w.SetSpawn(cube.Pos{8, 7*16 + 1, 8})
-}
-
-func (l *Library) registerCommands() {
-	cmd.Register(cmd.New("tp", "Teleport to specified place", nil, command.TeleportRoom{}, command.TeleportPlayer{}))
-	cmd.Register(cmd.New("search", "Search content in library", nil, command.Search{}))
-	cmd.Register(cmd.New("clear", "Clear inventory", nil, command.Clear{}))
 }

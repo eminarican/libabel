@@ -15,6 +15,7 @@ func DefaultConfig(gen world.Generator) (server.Config, error) {
 	cfg.Server.AuthEnabled = false
 	cfg.Players.SaveData = false
 	cfg.World.SaveData = false
+	cfg.Resources.AutoBuildPack = false
 
 	srvCfg, err := cfg.Config(NopLogger{})
 

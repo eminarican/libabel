@@ -16,20 +16,20 @@ type TeleportRoom struct {
 
 func (t TeleportRoom) Run(src cmd.Source, out *cmd.Output) {
 	p := src.(*player.Player)
-	h := p.Handler().(*session.Handler)
+	sta := p.Handler().(*session.Session).State
 
 	if t.Room.Y() < 1 || t.Room.Y() > 14 {
 		out.Error("room y position should be in range of 1-14")
 		return
 	}
 
-	h.Room = cube.PosFromVec3(t.Room)
+	sta.Room = cube.PosFromVec3(t.Room)
 	if hex, ok := t.Hex.Load(); ok {
-		h.Hex = hex
+		sta.Hex = hex
 	}
 
-	p.Teleport(h.Room.Vec3().Mul(16).Add(mgl64.Vec3{8, 1, 8}))
-	out.Print(text.Colourf("<green>Teleported to Room: %v Hex: %v</green>", h.Room[:], h.Hex))
+	p.Teleport(sta.Room.Vec3().Mul(16).Add(mgl64.Vec3{8, 1, 8}))
+	out.Print(text.Colourf("<green>Teleported to Room: %v Hex: %v</green>", sta.Room[:], sta.Hex))
 }
 
 type TeleportPlayer struct {
@@ -38,7 +38,7 @@ type TeleportPlayer struct {
 
 func (t TeleportPlayer) Run(src cmd.Source, out *cmd.Output) {
 	p := src.(*player.Player)
-	h := p.Handler().(*session.Handler)
+	sta := p.Handler().(*session.Session).State
 
 	if len(t.Target) > 1 {
 		out.Errorf("You can't select multiple targets")
@@ -56,9 +56,9 @@ func (t TeleportPlayer) Run(src cmd.Source, out *cmd.Output) {
 		return
 	}
 
-	th := tp.Handler().(*session.Handler)
-	h.Room = th.Room
-	h.Hex = th.Hex
+	tSta := tp.Handler().(*session.Session).State
+	sta.Room = tSta.Room
+	sta.Hex = tSta.Hex
 
 	p.Teleport(tp.Position())
 	out.Print(text.Colourf("<green>Teleported to Player: %v</green>", tp.Name()))

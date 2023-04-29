@@ -58,12 +58,12 @@ func (c SearchResult) Submit(sub form.Submitter, pressed form.Button) {
 	}
 
 	p := sub.(*player.Player)
-	h := p.Handler().(*session.Handler)
+	sta := p.Handler().(*session.Session).State
 
-	h.Room = c.address.Room
-	h.Hex = c.address.Hex
+	sta.Room = c.address.Room
+	sta.Hex = c.address.Hex
 
-	p.Teleport(h.Room.Vec3().Mul(16).Add(mgl64.Vec3{8, 1, 8}))
+	p.Teleport(sta.Room.Vec3().Mul(16).Add(mgl64.Vec3{8, 1, 8}))
 	p.Message(text.Colourf("<green>Teleported to room</green>"))
 	p.Message(text.Colourf("<purple>Shulker:</purple> %v\n", c.address.Shulker))
 	p.Message(text.Colourf("<aqua>Book:</aqua> %v\n", c.address.Volume))
