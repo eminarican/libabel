@@ -1,35 +1,39 @@
-package command
+package library
 
 import (
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/eminarican/libabel/library/session"
-	"github.com/go-gl/mathgl/mgl64"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 )
 
 type TeleportRoom struct {
-	Room mgl64.Vec3           `cmd:"room"`
-	Hex  cmd.Optional[string] `cmd:"hex"`
+	X   int                  `cmd:"x"`
+	Y   int                  `cmd:"y"`
+	Z   int                  `cmd:"z"`
+	Hex cmd.Optional[string] `cmd:"hex"`
 }
 
 func (t TeleportRoom) Run(src cmd.Source, out *cmd.Output) {
-	p := src.(*player.Player)
-	sta := p.Handler().(*session.Session).State
+	ses := session.Get(src.(*player.Player))
 
-	if t.Room.Y() < 1 || t.Room.Y() > 14 {
+	if t.Y < 1 || t.Y > 14 {
 		out.Error("room y position should be in range of 1-14")
 		return
 	}
 
-	sta.Room = cube.PosFromVec3(t.Room)
+	ses.SetRoom(cube.Pos{
+		t.X, t.Y, t.Z,
+	})
 	if hex, ok := t.Hex.Load(); ok {
-		sta.Hex = hex
+		ses.SetHex(hex)
 	}
 
-	p.Teleport(sta.Room.Vec3().Mul(16).Add(mgl64.Vec3{8, 1, 8}))
-	out.Print(text.Colourf("<green>Teleported to Room: %v Hex: %v</green>", sta.Room[:], sta.Hex))
+	ses.TeleportRoom(ses.Room())
+	out.Print(text.Colourf(
+		"<green>Teleported to Room: %v Hex: %v</green>", ses.Room(), ses.Hex(),
+	))
 }
 
 type TeleportPlayer struct {
@@ -37,29 +41,28 @@ type TeleportPlayer struct {
 }
 
 func (t TeleportPlayer) Run(src cmd.Source, out *cmd.Output) {
-	p := src.(*player.Player)
-	sta := p.Handler().(*session.Session).State
+	ses := session.Get(src.(*player.Player))
 
 	if len(t.Target) > 1 {
 		out.Errorf("You can't select multiple targets")
 		return
 	}
 
-	tp, ok := t.Target[0].(*player.Player)
+	tar, ok := t.Target[0].(*player.Player)
 	if !ok {
 		out.Errorf("Target isn't a player")
 		return
 	}
 
-	if p == tp {
+	if tar == ses.Player() {
 		out.Errorf("You can't teleport to yourself")
 		return
 	}
 
-	tSta := tp.Handler().(*session.Session).State
-	sta.Room = tSta.Room
-	sta.Hex = tSta.Hex
+	tarSes := session.Get(tar)
+	ses.SetRoom(tarSes.Room())
+	ses.SetHex(tarSes.Hex())
 
-	p.Teleport(tp.Position())
-	out.Print(text.Colourf("<green>Teleported to Player: %v</green>", tp.Name()))
+	ses.Teleport(tar.Position())
+	out.Print(text.Colourf("<green>Teleported to Player: %v</green>", tar.Name()))
 }

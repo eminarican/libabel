@@ -1,4 +1,4 @@
-package page
+package algo
 
 import (
 	"crypto/md5"

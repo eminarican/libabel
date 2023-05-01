@@ -1,38 +1,47 @@
 package menu
 
 import (
-	"github.com/df-mc/dragonfly/server/player"
-	"github.com/df-mc/dragonfly/server/player/form"
+	df "github.com/df-mc/dragonfly/server/player/form"
+	"github.com/eminarican/libabel/library/session"
 	"github.com/sandertv/gophertunnel/minecraft/text"
+	form "github.com/twistedasylummc/inline-forms"
 )
 
-type Menu struct {
-	Search   form.Button
-	Marker   form.Button
-	Clear    form.Button
-	Settings form.Button
-}
-
-func New() form.Form {
-	return form.NewMenu(Menu{
-		Search:   form.NewButton("Search\nopens search menu", "textures/items/ender_eye"),
-		Marker:   form.NewButton("Marker\nopens marker menu", "textures/items/book_portfolio"),
-		Clear:    form.NewButton("Clear\nclears inventory", "textures/items/flint_and_steel"),
-		Settings: form.NewButton("Settings\nopens settings menu", "textures/items/banner_pattern"),
-	}, "Menu")
-}
-
-func (m Menu) Submit(sub form.Submitter, pressed form.Button) {
-	p := sub.(*player.Player)
-
-	switch pressed {
-	case m.Marker:
-		p.Message(text.Colourf("<red>Not yet implemented!</red>"))
-	case m.Search:
-		p.SendForm(NewSearch())
-	case m.Clear:
-		p.SendForm(NewClear())
-	case m.Settings:
-		p.Message(text.Colourf("<red>Not yet implemented!</red>"))
+func New(ses *session.Session) df.Form {
+	return &form.Menu{
+		Title:   "Menu",
+		Content: "Please select an item",
+		Buttons: []form.Button{
+			{
+				Text:  "Search\nopens search menu",
+				Image: "textures/items/ender_eye",
+				Submit: func() {
+					ses.SendFormF(NewSearch)
+				},
+			},
+			{
+				Text:  "Marker\nopens marker menu",
+				Image: "textures/items/book_portfolio",
+				Submit: func() {
+					ses.Message(text.Colourf("<red>This is not yet implemented</red>"))
+					//ses.SendFormF(NewMarker)
+				},
+			},
+			{
+				Text:  "Clear\nclears inventory",
+				Image: "textures/items/flint_and_steel",
+				Submit: func() {
+					ses.SendFormF(NewClear)
+				},
+			},
+			{
+				Text:  "Settings\nopens settings menu",
+				Image: "textures/items/banner_pattern",
+				Submit: func() {
+					ses.Message(text.Colourf("<red>This is not yet implemented</red>"))
+					//ses.SendFormF(NewSettings)
+				},
+			},
+		},
 	}
 }

@@ -1,34 +1,32 @@
 package menu
 
 import (
-	"github.com/df-mc/dragonfly/server/player"
-	"github.com/df-mc/dragonfly/server/player/form"
+	df "github.com/df-mc/dragonfly/server/player/form"
 	"github.com/eminarican/libabel/library/session"
 	"github.com/sandertv/gophertunnel/minecraft/text"
+	form "github.com/twistedasylummc/inline-forms"
 )
 
-type Clear struct {
-	Yes form.Button
-	No  form.Button
-}
+func NewClear(ses *session.Session) df.Form {
+	return &form.Modal{
+		Title:   "Clear Confirmation",
+		Content: "are you sure about to clear your inventory?",
+		Button1: form.Button{
+			Text: "Yes",
+			Submit: func() {
+				inv := ses.Inventory()
 
-func NewClear() form.Form {
-	return form.NewModal(Clear{
-		Yes: form.YesButton(),
-		No:  form.NoButton(),
-	}, "Clear Confirmation").
-		WithBody("are you sure about to clear your inventory?")
-}
+				inv.Clear()
+				session.AddGadget(inv)
 
-func (c Clear) Submit(sub form.Submitter, pressed form.Button) {
-	p := sub.(*player.Player)
-
-	switch pressed {
-	case c.Yes:
-		p.Inventory().Clear()
-		session.AddGadget(p)
-		p.Message(text.Colourf("<green>Inventory Cleared</green>"))
-	case c.No:
-		p.SendForm(New())
+				ses.Message(text.Colourf("<green>Inventory Cleared</green>"))
+			},
+		},
+		Button2: form.Button{
+			Text: "No",
+			Submit: func() {
+				ses.SendFormF(New)
+			},
+		},
 	}
 }

@@ -1,71 +1,72 @@
 package menu
 
 import (
-	"github.com/df-mc/dragonfly/server/player"
-	"github.com/df-mc/dragonfly/server/player/form"
-	"github.com/eminarican/libabel/library/page"
+	df "github.com/df-mc/dragonfly/server/player/form"
+	"github.com/eminarican/libabel/library/algo"
 	"github.com/eminarican/libabel/library/session"
-	"github.com/go-gl/mathgl/mgl64"
 	"github.com/sandertv/gophertunnel/minecraft/text"
+	form "github.com/twistedasylummc/inline-forms"
 )
 
-type Search struct {
-	Text  form.Input
-	Exact form.Toggle
-}
+func NewSearch(ses *session.Session) df.Form {
+	txt := ""
+	xct := false
 
-func NewSearch() form.Form {
-	return form.New(Search{
-		Text:  form.NewInput("Please fill the form to search library", "", "text to search"),
-		Exact: form.NewToggle("Exact Match", false),
-	}, "Search")
-}
+	return &form.Custom{
+		Title: "Search",
+		Elements: []form.Element{
+			form.Label{
+				Text: "Please fill the form to search library",
+			},
+			form.Input{
+				Text:        "Text",
+				Placeholder: "example input",
+				Submit: func(text string) {
+					txt = text
+				},
+			},
+			form.Toggle{
+				Text:    "Exact Match",
+				Default: false,
+				Submit: func(enabled bool) {
+					xct = enabled
+				},
+			},
+		},
+		Submit: func(closed bool, _ []any) {
+			if closed {
+				ses.SendFormF(New)
+				return
+			}
 
-func (c Search) Submit(sub form.Submitter) {
-	p := sub.(*player.Player)
-	txt := c.Text.Value()
+			if len(txt) > algo.Length {
+				ses.Message(text.Colourf(
+					"<red>Text can't be longer than page length %v character</red>", algo.Length,
+				))
+				return
+			}
 
-	if len(txt) > page.Length {
-		p.Message(text.Colourf("<red>Text can't be longer than page length %v character</red>", page.Length))
-		return
+			adr := algo.Search(txt, !xct)
+			ses.SendForm(NewSearchResult(ses, adr))
+		},
 	}
-
-	adr := page.Search(txt, !c.Exact.Value())
-	p.SendForm(NewSearchResult(adr))
 }
 
-type SearchResult struct {
-	address  page.Address
-	Teleport form.Button
-}
+func NewSearchResult(ses *session.Session, adr algo.Address) df.Form {
+	return &form.Menu{
+		Title:   "Search Result",
+		Content: adr.Format(),
+		Buttons: []form.Button{
+			{
+				Text: "Teleport",
+				Submit: func() {
+					ses.SetHex(adr.Hex)
+					ses.TeleportRoom(adr.Room)
 
-func NewSearchResult(adr page.Address) form.Form {
-	return form.NewMenu(SearchResult{
-		address:  adr,
-		Teleport: form.NewButton("Teleport", ""),
-	}, "Search Result").WithBody(
-		text.Colourf(" <green>Room:</green> %v\n", adr.Room[:]),
-		text.Colourf("<purple>Shulker:</purple> %v\n", adr.Shulker),
-		text.Colourf("<aqua>Book:</aqua> %v\n", adr.Volume),
-		text.Colourf("<red>Page:</red> %v\n", adr.Page),
-		text.Colourf("<yellow>Hex:</yellow> %v\n", adr.Hex),
-	)
-}
-
-func (c SearchResult) Submit(sub form.Submitter, pressed form.Button) {
-	if pressed != c.Teleport {
-		return
+					ses.Message(text.Colourf("<green>Teleported to Destination</green>"))
+					ses.Message(adr.Format())
+				},
+			},
+		},
 	}
-
-	p := sub.(*player.Player)
-	sta := p.Handler().(*session.Session).State
-
-	sta.Room = c.address.Room
-	sta.Hex = c.address.Hex
-
-	p.Teleport(sta.Room.Vec3().Mul(16).Add(mgl64.Vec3{8, 1, 8}))
-	p.Message(text.Colourf("<green>Teleported to room</green>"))
-	p.Message(text.Colourf("<purple>Shulker:</purple> %v\n", c.address.Shulker))
-	p.Message(text.Colourf("<aqua>Book:</aqua> %v\n", c.address.Volume))
-	p.Message(text.Colourf("<red>Page:</red> %v\n", c.address.Page))
 }

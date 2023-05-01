@@ -3,6 +3,7 @@ package session
 import (
 	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/item/category"
+	"github.com/df-mc/dragonfly/server/item/inventory"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/form"
 	"github.com/df-mc/dragonfly/server/world"
@@ -18,14 +19,14 @@ func init() {
 	world.RegisterItem(Gadget{})
 }
 
-func AddGadget(p *player.Player) {
-	_ = p.Inventory().SetItem(8, item.NewStack(Gadget{}, 1).
+func AddGadget(inv *inventory.Inventory) {
+	_ = inv.SetItem(8, item.NewStack(Gadget{}, 1).
 		WithCustomName(text.Colourf("<purple>Open Menu</purple>")))
 }
 
 func (s Gadget) Use(_ *world.World, user item.User, _ *item.UseContext) bool {
-	p := user.(*player.Player)
-	p.SendForm(newMenuForm())
+	ses := Get(user.(*player.Player))
+	ses.SendForm(newMenuForm(ses))
 	return true
 }
 
@@ -52,4 +53,4 @@ func (Gadget) Texture() image.Image {
 // noinspection ALL
 //
 //go:linkname newMenuForm github.com/eminarican/libabel/library/menu.New
-func newMenuForm() form.Form
+func newMenuForm(ses *Session) form.Form

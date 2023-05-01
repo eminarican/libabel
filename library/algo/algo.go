@@ -1,8 +1,9 @@
-package page
+package algo
 
 import (
 	"fmt"
 	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/sandertv/gophertunnel/minecraft/text"
 	"math/big"
 	"math/rand"
 )
@@ -33,10 +34,19 @@ type Address struct {
 	Page    int
 }
 
-func (addr Address) String() string {
+func (a Address) String() string {
 	return fmt.Sprintf(
 		"%v:[%v]:[%v]:[%v]:%v",
-		addr.Room, addr.Shulker, addr.Volume, addr.Page, addr.Hex,
+		a.Room, a.Shulker, a.Volume, a.Page, a.Hex,
+	)
+}
+
+func (a Address) Format() string {
+	return text.Colourf(
+		"<green>Room:</green> %v <purple>Shulker:</purple> %v\n"+
+			"<aqua>Book:</aqua> %v <red>Page:</red> %v\n"+
+			"<yellow>Hex:</yellow> %v",
+		a.Room[:], a.Shulker, a.Volume, a.Page, a.Hex,
 	)
 }
 

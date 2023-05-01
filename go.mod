@@ -23,6 +23,7 @@ require (
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/sandertv/go-raknet v1.12.0 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/twistedasylummc/inline-forms v0.0.3 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
