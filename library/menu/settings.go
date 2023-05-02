@@ -15,7 +15,7 @@ func NewSettings(ses *session.Session) df.Form {
 		Title: "Settings",
 		Elements: []form.Element{
 			form.Label{
-				Text: "Please update your settings and submit the form",
+				Text: "Please update your settings",
 			},
 			form.Toggle{
 				Text:    "Show Position",

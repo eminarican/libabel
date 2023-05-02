@@ -1,7 +1,6 @@
 package library
 
 import (
-	"fmt"
 	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/block/cube"
 	"github.com/df-mc/dragonfly/server/cmd"
@@ -9,28 +8,37 @@ import (
 	_ "github.com/eminarican/libabel/library/menu"
 	"github.com/eminarican/libabel/library/session"
 	"github.com/sandertv/gophertunnel/minecraft/text"
+	"log"
 )
 
 type Library struct {
-	s *server.Server
+	srv *server.Server
+	pro *session.Provider
 }
 
-func New(c server.Config) *Library {
+func New(c server.Config, pro *session.Provider) *Library {
 	return &Library{
-		s: c.New(),
+		srv: c.New(),
+		pro: pro,
 	}
 }
 
 func (l *Library) HandleJoin(ses *session.Session) {
+	if dat, err := l.pro.Load(ses.UUID()); err == nil {
+		ses.SetData(&dat)
+	}
 	ses.Message(text.Colourf("<yellow>Welcome to Library of Babel!</yellow>"))
 }
 
 func (l *Library) HandleQuit(ses *session.Session) {
+	if err := l.pro.Save(ses.UUID(), *ses.Data()); err != nil {
+		log.Fatalf("player data couldn't be saved: %v %v", err, ses.Data())
+	}
 }
 
 func (l *Library) Start() {
-	l.s.CloseOnProgramEnd()
-	l.s.Listen()
+	l.srv.CloseOnProgramEnd()
+	l.srv.Listen()
 
 	l.setupWorld()
 
@@ -39,18 +47,18 @@ func (l *Library) Start() {
 		nil, TeleportRoom{}, TeleportPlayer{},
 	))
 
-	fmt.Println(text.ANSI(text.Colourf(
+	log.Println(text.ANSI(text.Colourf(
 		"<green>Library of Babel Started on Port 19132!</green>",
 	)))
 
-	for l.s.Accept(func(p *player.Player) {
-		l.HandleJoin(session.Init(p, l.s, l.HandleQuit))
+	for l.srv.Accept(func(p *player.Player) {
+		l.HandleJoin(session.Init(p, l.srv, l.HandleQuit))
 	}) {
 	}
 }
 
 func (l *Library) setupWorld() {
-	w := l.s.World()
+	w := l.srv.World()
 
 	w.StopTime()
 	w.StopRaining()

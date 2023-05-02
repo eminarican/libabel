@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/df-mc/structure"
 	"github.com/eminarican/libabel/library"
+	"github.com/eminarican/libabel/library/session"
 	"log"
 )
 
@@ -18,6 +19,11 @@ func main() {
 		log.Fatalf("couldn't create config: %v", err)
 	}
 
-	lib := library.New(cfg)
+	pro, err := session.NewProvider("./players")
+	if err != nil {
+		log.Fatalf("couldn't create session data provider: %v", err)
+	}
+
+	lib := library.New(cfg, pro)
 	lib.Start()
 }

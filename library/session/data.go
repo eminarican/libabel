@@ -3,17 +3,17 @@ package session
 import "github.com/df-mc/dragonfly/server/block/cube"
 
 type Data struct {
-	MusicVol   float64
-	ShowPos    bool
-	ShowOthers bool
+	MusicVol   float64 `json:"music_vol"`
+	ShowPos    bool    `json:"show_pos"`
+	ShowOthers bool    `json:"show_others"`
 
-	Markers map[string]Marker
+	Markers map[string]Marker `json:"markers"`
 }
 
 type Marker struct {
-	Room cube.Pos
-	Hex  string
-	Desc string
+	Room cube.Pos `json:"room"`
+	Hex  string   `json:"hex"`
+	Desc string   `json:"desc"`
 }
 
 func NewData() *Data {
@@ -23,6 +23,14 @@ func NewData() *Data {
 		ShowOthers: true,
 		Markers:    map[string]Marker{},
 	}
+}
+
+func (s *Session) Data() *Data {
+	return s.data
+}
+
+func (s *Session) SetData(dat *Data) {
+	s.data = dat
 }
 
 func (s *Session) MusicVol() float64 {

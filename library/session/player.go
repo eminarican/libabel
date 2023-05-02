@@ -7,6 +7,7 @@ import (
 	"github.com/df-mc/dragonfly/server/player/scoreboard"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/go-gl/mathgl/mgl64"
+	"github.com/google/uuid"
 )
 
 func (s *Session) Inventory() *inventory.Inventory {
@@ -43,6 +44,10 @@ func (s *Session) Teleport(pos mgl64.Vec3) {
 
 func (s *Session) TeleportRoom(pos cube.Pos) {
 	s.Player().Teleport(pos.Vec3().Mul(16).Add(mgl64.Vec3{8.5, 1, 8.5}))
+}
+
+func (s *Session) UUID() uuid.UUID {
+	return s.Player().UUID()
 }
 
 func (s *Session) World() *world.World {
