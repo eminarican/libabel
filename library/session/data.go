@@ -1,6 +1,9 @@
 package session
 
-import "github.com/df-mc/dragonfly/server/block/cube"
+import (
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/sandertv/gophertunnel/minecraft/text"
+)
 
 type Data struct {
 	MusicVol   float64 `json:"music_vol"`
@@ -14,6 +17,15 @@ type Marker struct {
 	Room cube.Pos `json:"room"`
 	Hex  string   `json:"hex"`
 	Desc string   `json:"desc"`
+}
+
+func (m Marker) Format() string {
+	return text.Colourf(
+		"<green>Room:</green> %v\n"+
+			"<purple>Desc:</purple> %v\n"+
+			"<yellow>Hex:</yellow> %v",
+		m.Room, m.Desc, m.Hex,
+	)
 }
 
 func NewData() *Data {

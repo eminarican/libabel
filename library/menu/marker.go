@@ -1,7 +1,6 @@
 package menu
 
 import (
-	"fmt"
 	df "github.com/df-mc/dragonfly/server/player/form"
 	"github.com/eminarican/libabel/library/session"
 	"github.com/sandertv/gophertunnel/minecraft/text"
@@ -48,6 +47,9 @@ func NewMarkerAdd(ses *session.Session) df.Form {
 	return &form.Custom{
 		Title: "Add Marker",
 		Elements: []form.Element{
+			form.Label{
+				Text: "Please fill the form to add marker",
+			},
 			form.Input{
 				Text:        "Name:",
 				Placeholder: "my marker",
@@ -63,7 +65,7 @@ func NewMarkerAdd(ses *session.Session) df.Form {
 				},
 			},
 			form.Label{
-				Text: ses.Room().String(),
+				Text: text.Colourf("<green>Room:</green> %v\n<yellow>Hex</yellow> %v", ses.Room(), ses.Hex()),
 			},
 		},
 		Submit: func(closed bool, _ []any) {
@@ -85,7 +87,7 @@ func NewMarkerAdd(ses *session.Session) df.Form {
 func NewMarkerView(ses *session.Session, name string, mar session.Marker) df.Form {
 	return &form.Menu{
 		Title:   "View Marker",
-		Content: fmt.Sprintf("%v %v", name, mar),
+		Content: text.Colourf("<red>Name:</red> %v\n%v", name, mar.Format()),
 		Buttons: []form.Button{
 			{
 				Text:  "Teleport",
@@ -116,7 +118,7 @@ func NewMarkerView(ses *session.Session, name string, mar session.Marker) df.For
 func NewMarkerDelete(ses *session.Session, name string, mar session.Marker) df.Form {
 	return &form.Modal{
 		Title:   "Delete Marker",
-		Content: fmt.Sprintf("%v %v", name, mar),
+		Content: text.Colourf("<red>Name:</red> %v\n%v", name, mar.Format()),
 		Button1: form.Button{
 			Text: "Yes",
 			Submit: func() {
