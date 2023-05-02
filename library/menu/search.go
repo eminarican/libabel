@@ -19,7 +19,7 @@ func NewSearch(ses *session.Session) df.Form {
 				Text: "Please fill the form to search library",
 			},
 			form.Input{
-				Text:        "Text",
+				Text:        "Text:",
 				Placeholder: "example input",
 				Submit: func(text string) {
 					txt = text

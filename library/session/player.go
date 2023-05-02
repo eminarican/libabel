@@ -33,6 +33,10 @@ func (s *Session) SendScoreboard(scb *scoreboard.Scoreboard) {
 	s.Player().SendScoreboard(scb)
 }
 
+func (s *Session) RemoveScoreboard() {
+	s.Player().RemoveScoreboard()
+}
+
 func (s *Session) Teleport(pos mgl64.Vec3) {
 	s.Player().Teleport(pos)
 }

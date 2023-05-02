@@ -43,10 +43,10 @@ func (a Address) String() string {
 
 func (a Address) Format() string {
 	return text.Colourf(
-		"<green>Room:</green> %v <purple>Shulker:</purple> %v\n"+
-			"<aqua>Book:</aqua> %v <red>Page:</red> %v\n"+
+		"<green>Room:</green> %v\n"+
+			"<purple>Shulker:</purple> %v <aqua>Book:</aqua> %v <red>Page:</red> %v\n"+
 			"<yellow>Hex:</yellow> %v",
-		a.Room[:], a.Shulker, a.Volume, a.Page, a.Hex,
+		a.Room, a.Shulker, a.Volume, a.Page, a.Hex,
 	)
 }
 

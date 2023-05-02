@@ -10,6 +10,7 @@ type Session struct {
 	player.NopHandler
 	quit func(session *Session)
 
+	data   *Data
 	player *player.Player
 	server *server.Server
 
@@ -23,9 +24,10 @@ func Get(p *player.Player) *Session {
 
 func Init(p *player.Player, s *server.Server, quit func(session *Session)) *Session {
 	ses := &Session{
-		quit:   quit,
 		player: p,
 		server: s,
+		quit:   quit,
+		data:   NewData(),
 		hex:    "library_of_babel",
 	}
 

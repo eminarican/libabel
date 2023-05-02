@@ -3,14 +3,13 @@ package menu
 import (
 	df "github.com/df-mc/dragonfly/server/player/form"
 	"github.com/eminarican/libabel/library/session"
-	"github.com/sandertv/gophertunnel/minecraft/text"
 	form "github.com/twistedasylummc/inline-forms"
 )
 
 func New(ses *session.Session) df.Form {
 	return &form.Menu{
 		Title:   "Menu",
-		Content: "Please select an item",
+		Content: "Please select an option below",
 		Buttons: []form.Button{
 			{
 				Text:  "Search\nopens search menu",
@@ -23,8 +22,7 @@ func New(ses *session.Session) df.Form {
 				Text:  "Marker\nopens marker menu",
 				Image: "textures/items/book_portfolio",
 				Submit: func() {
-					ses.Message(text.Colourf("<red>This is not yet implemented</red>"))
-					//ses.SendFormF(NewMarker)
+					ses.SendFormF(NewMarker)
 				},
 			},
 			{
@@ -38,8 +36,7 @@ func New(ses *session.Session) df.Form {
 				Text:  "Settings\nopens settings menu",
 				Image: "textures/items/banner_pattern",
 				Submit: func() {
-					ses.Message(text.Colourf("<red>This is not yet implemented</red>"))
-					//ses.SendFormF(NewSettings)
+					ses.SendFormF(NewSettings)
 				},
 			},
 		},

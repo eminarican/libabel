@@ -41,9 +41,11 @@ func (s *Session) HandleMove(ctx *event.Context, newPos mgl64.Vec3, _ float64, _
 		s.room[2] += delRom.Z()
 	}
 
-	s.SendScoreboard(scoreboard.New(
-		text.Colourf("<white>%v</white>", s.Room()),
-	))
+	if s.ShowPos() {
+		s.SendScoreboard(scoreboard.New(
+			text.Colourf("<white>%v</white>", s.Room()),
+		))
+	}
 }
 
 func (s *Session) HandleItemUseOnBlock(ctx *event.Context, pos cube.Pos, _ cube.Face, _ mgl64.Vec3) {

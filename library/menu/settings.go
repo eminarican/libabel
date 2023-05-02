@@ -7,12 +7,30 @@ import (
 )
 
 func NewSettings(ses *session.Session) df.Form {
-	music := 0.0
-	pos := true
+	music := ses.MusicVol()
+	other := ses.ShowOthers()
+	pos := ses.ShowPos()
 
 	return &form.Custom{
 		Title: "Settings",
 		Elements: []form.Element{
+			form.Label{
+				Text: "Please update your settings and submit the form",
+			},
+			form.Toggle{
+				Text:    "Show Position",
+				Default: pos,
+				Submit: func(enabled bool) {
+					pos = enabled
+				},
+			},
+			form.Toggle{
+				Text:    "Show Players",
+				Default: other,
+				Submit: func(enabled bool) {
+					other = enabled
+				},
+			},
 			form.Slider{
 				Text:     "Music Volume",
 				Min:      0,
@@ -23,18 +41,19 @@ func NewSettings(ses *session.Session) df.Form {
 					music = value
 				},
 			},
-			form.Toggle{
-				Text:    "Show Position",
-				Default: pos,
-				Submit: func(enabled bool) {
-					pos = enabled
-				},
-			},
 		},
 		Submit: func(closed bool, _ []any) {
 			if closed {
 				ses.SendFormF(New)
 				return
+			}
+
+			ses.SetMusicVol(music)
+			ses.SetShowOthers(other)
+			ses.SetShowPos(pos)
+
+			if !ses.ShowPos() {
+				ses.RemoveScoreboard()
 			}
 		},
 	}
