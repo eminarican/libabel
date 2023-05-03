@@ -33,7 +33,7 @@ func New(ses *session.Session) df.Form {
 		},
 	}
 
-	if !ses.Local() {
+	if ses.Local() {
 		btn = append(btn, form.Button{
 			Text:  "Copy\ncopies session data",
 			Image: "textures/items/banner_pattern",
