@@ -8,7 +8,17 @@ import (
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/go-gl/mathgl/mgl64"
 	"github.com/google/uuid"
+	"net"
+	"strings"
 )
+
+func (s *Session) Addr() net.Addr {
+	return s.Player().Addr()
+}
+
+func (s *Session) Local() bool {
+	return strings.HasPrefix(s.Addr().String(), "127.0.0.1")
+}
 
 func (s *Session) Inventory() *inventory.Inventory {
 	return s.Player().Inventory()

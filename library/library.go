@@ -48,7 +48,7 @@ func (l *Library) Start() {
 	))
 
 	log.Println(text.ANSI(text.Colourf(
-		"<green>Library of Babel Started on Port 19132!</green>",
+		"<green>Library of Babel Started on port 19132!</green>",
 	)))
 
 	for l.srv.Accept(func(p *player.Player) {

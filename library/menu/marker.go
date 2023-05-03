@@ -96,7 +96,7 @@ func NewMarkerView(ses *session.Session, name string, mar session.Marker) df.For
 					ses.SetHex(mar.Hex)
 					ses.TeleportRoom(mar.Room)
 
-					ses.Message(text.Colourf("<green>Teleported to Marker %v</green>", name))
+					ses.Message(text.Colourf("<green>Teleported to marker %v</green>", name))
 				},
 			},
 			{
@@ -123,7 +123,7 @@ func NewMarkerDelete(ses *session.Session, name string, mar session.Marker) df.F
 			Text: "Yes",
 			Submit: func() {
 				ses.RemMarker(name)
-				ses.Message(text.Colourf("<green>Marker Removed</green>"))
+				ses.Message(text.Colourf("<green>Marker removed</green>"))
 			},
 		},
 		Button2: form.Button{

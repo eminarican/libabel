@@ -63,7 +63,7 @@ func NewSearchResult(ses *session.Session, adr algo.Address) df.Form {
 					ses.SetHex(adr.Hex)
 					ses.TeleportRoom(adr.Room)
 
-					ses.Message(text.Colourf("<green>Teleported to Destination</green>"))
+					ses.Message(text.Colourf("<green>Teleported to destination</green>"))
 					ses.Message(adr.Format())
 				},
 			},

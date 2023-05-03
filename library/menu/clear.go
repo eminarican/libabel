@@ -19,7 +19,7 @@ func NewClear(ses *session.Session) df.Form {
 				inv.Clear()
 				session.AddGadget(inv)
 
-				ses.Message(text.Colourf("<green>Inventory Cleared</green>"))
+				ses.Message(text.Colourf("<green>Inventory cleared</green>"))
 			},
 		},
 		Button2: form.Button{

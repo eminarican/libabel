@@ -64,5 +64,5 @@ func (t TeleportPlayer) Run(src cmd.Source, out *cmd.Output) {
 	ses.SetHex(tarSes.Hex())
 
 	ses.Teleport(tar.Position())
-	out.Print(text.Colourf("<green>Teleported to Player: %v</green>", tar.Name()))
+	out.Print(text.Colourf("<green>Teleported to player %v</green>", tar.Name()))
 }

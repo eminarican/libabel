@@ -6,10 +6,6 @@ import (
 )
 
 type Data struct {
-	MusicVol   float64 `json:"music_vol"`
-	ShowPos    bool    `json:"show_pos"`
-	ShowOthers bool    `json:"show_others"`
-
 	Markers map[string]Marker `json:"markers"`
 }
 
@@ -30,10 +26,7 @@ func (m Marker) Format() string {
 
 func NewData() *Data {
 	return &Data{
-		MusicVol:   1.0,
-		ShowPos:    true,
-		ShowOthers: true,
-		Markers:    map[string]Marker{},
+		Markers: map[string]Marker{},
 	}
 }
 
@@ -43,30 +36,6 @@ func (s *Session) Data() *Data {
 
 func (s *Session) SetData(dat *Data) {
 	s.data = dat
-}
-
-func (s *Session) MusicVol() float64 {
-	return s.data.MusicVol
-}
-
-func (s *Session) SetMusicVol(new float64) {
-	s.data.MusicVol = new
-}
-
-func (s *Session) ShowPos() bool {
-	return s.data.ShowPos
-}
-
-func (s *Session) SetShowPos(new bool) {
-	s.data.ShowPos = new
-}
-
-func (s *Session) ShowOthers() bool {
-	return s.data.ShowOthers
-}
-
-func (s *Session) SetShowOthers(new bool) {
-	s.data.ShowOthers = new
 }
 
 func (s *Session) Markers() map[string]Marker {
