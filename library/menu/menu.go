@@ -4,6 +4,7 @@ import (
 	"fmt"
 	df "github.com/df-mc/dragonfly/server/player/form"
 	"github.com/eminarican/libabel/library/session"
+	"github.com/sandertv/gophertunnel/minecraft/text"
 	form "github.com/twistedasylummc/inline-forms"
 	"golang.design/x/clipboard"
 )
@@ -44,7 +45,7 @@ func New(ses *session.Session) df.Form {
 					"%v %v %v %v", rom.X(), rom.Y(), rom.Z(), ses.Hex(),
 				)))
 
-				ses.Message("Session data copied to clipboard")
+				ses.Message(text.Colourf("<green>Session data copied to clipboard</green>"))
 			},
 		})
 	}
