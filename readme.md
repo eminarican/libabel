@@ -1,5 +1,4 @@
 # libabel
-minecraft library of babel
+minecraft library of babel in bedrock
 
-## todo:
-  - readme T.T
+<img src=".github/assets/preview.png" alt="preview"/>
